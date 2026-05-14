@@ -5,25 +5,55 @@
   "version": "0.1.0",
   "manifest": "https://raw.githubusercontent.com/WeissD-10/tvtt-token-action-hud-sr4/main/module.json",
   "download": "https://github.com/WeissD-10/tvtt-token-action-hud-sr4/releases/download/v1.0.0/token-action-hud-sr4.zip",
-  "author": "dweiss",
+
+  "authors": [
+    {
+      "name": "dweiss"
+    }
+  ],
+
   "compatibility": {
     "minimum": "13",
     "verified": "14"
   },
+
   "relationships": {
     "systems": [
-      { "id": "shadowrun4e", "type": "system", "compatibility": { "minimum": "1.0.0" } }
+      {
+        "id": "shadowrun4e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "1.0.0"
+        }
+      }
     ],
     "requires": [
-      { "id": "token-action-hud-core", "type": "module", "compatibility": { "minimum": "1.5.0" } }
+      {
+        "id": "token-action-hud-core",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.5.0"
+        }
+      }
     ]
   },
+
   "styles": ["token-action-hud-sr4.css"],
   "esmodules": ["token-action-hud-sr4.js"],
+
   "languages": [
-    { "lang": "en", "name": "English", "path": "lang/en.json" },
-    { "lang": "de", "name": "Deutsch", "path": "lang/de.json" }
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
   ],
+
   "flags": {
     "token-action-hud-core": {
       "api": {
