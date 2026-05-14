@@ -1,0 +1,31 @@
+{
+  "SR4": {
+    "HUD": {
+      "ActiveSkills": "Active Skills",
+      "KnowledgeSkills": "Knowledge Skills",
+      "Weapons": "Weapons",
+      "Monitor": "Condition Monitor",
+      "Skills": {
+        "Combat": "Combat",
+        "Physical": "Physical",
+        "Social": "Social",
+        "Technical": "Technical",
+        "Matrix": "Matrix",
+        "Magic": "Magic",
+        "Vehicle": "Vehicle",
+        "Misc": "Miscellaneous",
+        "Academic": "Academic",
+        "Street": "Street"
+      }
+    }
+  },
+  "sr4": {
+    "monitor": {
+      "physical": "Physical Monitor",
+      "stun": "Stun Monitor",
+      "setCurrent": "Set current damage",
+      "set": "Set",
+      "reset": "Reset"
+    }
+  }
+}

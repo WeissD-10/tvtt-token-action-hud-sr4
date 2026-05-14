@@ -5,39 +5,45 @@
 
 const MODULE_ID = 'token-action-hud-sr4';
 
-
-
 const GROUPS = {
   // Top-level tabs
-  activeSkills:     { id: 'active-skills',    name: 'SR4.HUD.ActiveSkills',    type: 'system' },
-  knowledgeSkills:  { id: 'knowledge-skills', name: 'SR4.HUD.KnowledgeSkills', type: 'system' },
-  weapons:          { id: 'weapons',          name: 'SR4.HUD.Weapons',         type: 'system' },
-  monitor:          { id: 'monitor',          name: 'SR4.HUD.Monitor',         type: 'system' },
+  activeSkills:      { id: 'active-skills',       name: 'SR4.HUD.ActiveSkills',    type: 'system' },
+  knowledgeSkills:   { id: 'knowledge-skills',    name: 'SR4.HUD.KnowledgeSkills', type: 'system' },
+  weapons:           { id: 'weapons',             name: 'SR4.HUD.Weapons',         type: 'system' },
+  monitor:           { id: 'monitor',             name: 'SR4.HUD.Monitor',         type: 'system' },
 
   // Active skill subgroups
-  skillsCombat:     { id: 'skills-combat',    name: 'SR4.HUD.Skills.Combat',    type: 'system' },
-  skillsPhysical:   { id: 'skills-physical',  name: 'SR4.HUD.Skills.Physical',  type: 'system' },
-  skillsSocial:     { id: 'skills-social',    name: 'SR4.HUD.Skills.Social',    type: 'system' },
-  skillsTechnical:  { id: 'skills-technical', name: 'SR4.HUD.Skills.Technical', type: 'system' },
-  skillsMatrix:     { id: 'skills-matrix',    name: 'SR4.HUD.Skills.Matrix',    type: 'system' },
-  skillsMagic:      { id: 'skills-magic',     name: 'SR4.HUD.Skills.Magic',     type: 'system' },
-  skillsVehicle:    { id: 'skills-vehicle',   name: 'SR4.HUD.Skills.Vehicle',   type: 'system' },
-  skillsMisc:       { id: 'skills-misc',      name: 'SR4.HUD.Skills.Misc',      type: 'system' },
+  skillsCombat:      { id: 'skills-combat',       name: 'SR4.HUD.Skills.Combat',    type: 'system' },
+  skillsPhysical:    { id: 'skills-physical',     name: 'SR4.HUD.Skills.Physical',  type: 'system' },
+  skillsSocial:      { id: 'skills-social',       name: 'SR4.HUD.Skills.Social',    type: 'system' },
+  skillsTechnical:   { id: 'skills-technical',    name: 'SR4.HUD.Skills.Technical', type: 'system' },
+  skillsMatrix:      { id: 'skills-matrix',       name: 'SR4.HUD.Skills.Matrix',    type: 'system' },
+  skillsMagic:       { id: 'skills-magic',        name: 'SR4.HUD.Skills.Magic',     type: 'system' },
+  skillsVehicle:     { id: 'skills-vehicle',      name: 'SR4.HUD.Skills.Vehicle',   type: 'system' },
+  skillsMisc:        { id: 'skills-misc',         name: 'SR4.HUD.Skills.Misc',      type: 'system' },
 
   // Knowledge skill subgroups
-  knowledgeAcademic: { id: 'knowledge-academic', name: 'SR4.HUD.Skills.Academic', type: 'system' },
-  knowledgeStreet:   { id: 'knowledge-street',   name: 'SR4.HUD.Skills.Street',   type: 'system' },
-  knowledgeMisc:     { id: 'knowledge-misc',     name: 'SR4.HUD.Skills.Misc',     type: 'system' },
+  knowledgeAcademic: { id: 'knowledge-academic',  name: 'SR4.HUD.Skills.Academic',  type: 'system' },
+  knowledgeStreet:   { id: 'knowledge-street',    name: 'SR4.HUD.Skills.Street',    type: 'system' },
+  knowledgeMisc:     { id: 'knowledge-misc',      name: 'SR4.HUD.Skills.Misc',      type: 'system' },
 
   // Weapons + monitor subgroups
-  weaponsList:      { id: 'weapons-list',     name: 'SR4.HUD.Weapons',         type: 'system' },
-  monitorList:      { id: 'monitor-list',     name: 'SR4.HUD.Monitor',         type: 'system' },
+  weaponsList:       { id: 'weapons-list',        name: 'SR4.HUD.Weapons',          type: 'system' },
+  monitorList:       { id: 'monitor-list',        name: 'SR4.HUD.Monitor',          type: 'system' },
 };
 
 const ACTIVE_SKILL_CATEGORIES    = ['combat', 'physical', 'social', 'technical', 'matrix', 'magic', 'vehicle', 'misc'];
 const KNOWLEDGE_SKILL_CATEGORIES = ['academic', 'street', 'misc'];
 
-// Mapping-Funktion
+/**
+ * Maps a knowledge skill's linked attribute to a display category.
+ * LOGIC     → academic
+ * INTUITION → street
+ * other     → misc
+ *
+ * @param {string} attribute
+ * @returns {'academic'|'street'|'misc'}
+ */
 function knowledgeCategory(attribute) {
   switch (attribute?.toUpperCase()) {
     case 'LOGIC':     return 'academic';
@@ -57,8 +63,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
       super(...args);
     }
 
-    sr4 = game?.shadowrun4e;
-    dialogUtility = this.sr4.dialogUtility
+    sr4           = game?.shadowrun4e;
+    dialogUtility = this.sr4.dialogUtility;
 
     async handleActionClick(event, encodedValue) {
       const [actionType, actionId] = encodedValue.split('|');
@@ -74,7 +80,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     async #rollSkill(actor, skillId) {
       const skill = actor.items.get(skillId);
       if (!skill) return;
-      this.dialogUtility.handleSkillRoll(actor, skill.name)
+      this.dialogUtility.handleSkillRoll(actor, skill.name);
     }
 
     async #rollWeapon(actor, weaponId) {
@@ -87,7 +93,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         return;
       }
 
-      this.dialogUtility.handleSkillRoll(actor, skill.name, weapon)
+      this.dialogUtility.handleSkillRoll(actor, skill.name, weapon);
     }
 
     async #adjustMonitor(actor, track) {
@@ -169,9 +175,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
           nestId: `active-skills_skills-${category}`,
           type:   'system',
         });
-        console.warn(actions, 'active')
       }
     }
+
     async #buildKnowledgeSkills(actor) {
       const skills = actor.items.filter(i => i.type === 'Skill' && i.system.type === 'knowledge');
 
@@ -198,7 +204,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
           nestId: `knowledge-skills_knowledge-${category}`,
           type:   'system',
         });
-        console.warn(actions)
       }
     }
 
@@ -299,6 +304,6 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
   const module = game.modules.get(MODULE_ID);
   module.api = { SystemManager: SR4SystemManager };
-  console.warn('[SR4-HUD] Registering module API', module);
+  console.log('[SR4-HUD] Registering module API', module);
   Hooks.call('tokenActionHudSystemReady', module);
 });
