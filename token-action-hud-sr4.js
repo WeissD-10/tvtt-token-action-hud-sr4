@@ -5,14 +5,46 @@
 
 const MODULE_ID = 'token-action-hud-sr4';
 
+
+
 const GROUPS = {
-  skills:      { id: 'skills',        name: 'SR4.HUD.Skills',  type: 'system' },
-  weapons:     { id: 'weapons',       name: 'SR4.HUD.Weapons', type: 'system' },
-  monitor:     { id: 'monitor',       name: 'SR4.HUD.Monitor', type: 'system' },
-  skillsList:  { id: 'skills-list',   name: 'SR4.HUD.Skills',  type: 'system' },
-  weaponsList: { id: 'weapons-list',  name: 'SR4.HUD.Weapons', type: 'system' },
-  monitorList: { id: 'monitor-list',  name: 'SR4.HUD.Monitor', type: 'system' },
+  // Top-level tabs
+  activeSkills:     { id: 'active-skills',    name: 'SR4.HUD.ActiveSkills',    type: 'system' },
+  knowledgeSkills:  { id: 'knowledge-skills', name: 'SR4.HUD.KnowledgeSkills', type: 'system' },
+  weapons:          { id: 'weapons',          name: 'SR4.HUD.Weapons',         type: 'system' },
+  monitor:          { id: 'monitor',          name: 'SR4.HUD.Monitor',         type: 'system' },
+
+  // Active skill subgroups
+  skillsCombat:     { id: 'skills-combat',    name: 'SR4.HUD.Skills.Combat',    type: 'system' },
+  skillsPhysical:   { id: 'skills-physical',  name: 'SR4.HUD.Skills.Physical',  type: 'system' },
+  skillsSocial:     { id: 'skills-social',    name: 'SR4.HUD.Skills.Social',    type: 'system' },
+  skillsTechnical:  { id: 'skills-technical', name: 'SR4.HUD.Skills.Technical', type: 'system' },
+  skillsMatrix:     { id: 'skills-matrix',    name: 'SR4.HUD.Skills.Matrix',    type: 'system' },
+  skillsMagic:      { id: 'skills-magic',     name: 'SR4.HUD.Skills.Magic',     type: 'system' },
+  skillsVehicle:    { id: 'skills-vehicle',   name: 'SR4.HUD.Skills.Vehicle',   type: 'system' },
+  skillsMisc:       { id: 'skills-misc',      name: 'SR4.HUD.Skills.Misc',      type: 'system' },
+
+  // Knowledge skill subgroups
+  knowledgeAcademic: { id: 'knowledge-academic', name: 'SR4.HUD.Skills.Academic', type: 'system' },
+  knowledgeStreet:   { id: 'knowledge-street',   name: 'SR4.HUD.Skills.Street',   type: 'system' },
+  knowledgeMisc:     { id: 'knowledge-misc',     name: 'SR4.HUD.Skills.Misc',     type: 'system' },
+
+  // Weapons + monitor subgroups
+  weaponsList:      { id: 'weapons-list',     name: 'SR4.HUD.Weapons',         type: 'system' },
+  monitorList:      { id: 'monitor-list',     name: 'SR4.HUD.Monitor',         type: 'system' },
 };
+
+const ACTIVE_SKILL_CATEGORIES    = ['combat', 'physical', 'social', 'technical', 'matrix', 'magic', 'vehicle', 'misc'];
+const KNOWLEDGE_SKILL_CATEGORIES = ['academic', 'street', 'misc'];
+
+// Mapping-Funktion
+function knowledgeCategory(attribute) {
+  switch (attribute?.toUpperCase()) {
+    case 'LOGIC':     return 'academic';
+    case 'INTUITION': return 'street';
+    default:          return 'misc';
+  }
+}
 
 Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
@@ -25,13 +57,16 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
       super(...args);
     }
 
+    sr4 = game?.shadowrun4e;
+    dialogUtility = this.sr4.dialogUtility
+
     async handleActionClick(event, encodedValue) {
       const [actionType, actionId] = encodedValue.split('|');
       const actor = this.actor;
 
       switch (actionType) {
-        case 'skill':   await this.#rollSkill(actor, actionId);    break;
-        case 'weapon':  await this.#rollWeapon(actor, actionId);   break;
+        case 'skill':   await this.#rollSkill(actor, actionId);     break;
+        case 'weapon':  await this.#rollWeapon(actor, actionId);    break;
         case 'monitor': await this.#adjustMonitor(actor, actionId); break;
       }
     }
@@ -39,103 +74,20 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     async #rollSkill(actor, skillId) {
       const skill = actor.items.get(skillId);
       if (!skill) return;
-
-      const rating         = skill.system.rating > 0 ? skill.system.rating : -1;
-      const attributeValue = actor.getAttribute(skill.system.attribute);
-      const numDice        = Math.max(attributeValue + rating, 1);
-      const skillName      = skill.system.label
-        ? game.i18n.localize(skill.system.label)
-        : skill.name;
-      const content = await renderTemplate(
-        'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs', {}
-      );
-
-      new Dialog({
-        title: `${game.i18n.localize('sr4.roll.rolling')} ${skillName}`,
-        content,
-        buttons: {
-          roll: {
-            label: game.i18n.localize('sr4.roll.rollButton'),
-            callback: async (html) => {
-              const DiceUtility = game.shadowrun4e?.DiceUtility;
-              if (!DiceUtility) return;
-              const bonus   = parseInt(html.find('#bonus').val())  || 0;
-              const malus   = parseInt(html.find('#malus').val())  || 0;
-              const explode = html.find('#edge').prop('checked');
-              const spec    = html.find('#specialization').prop('checked');
-              const final   = numDice + bonus - malus + (spec ? 2 : 0);
-              await DiceUtility.rollAndShow({
-                numDice: final, explode,
-                edgeAvailable: actor.system.sheetStats.CURRENTEDGE > 0,
-                actor, skillName: skill.name,
-                extended: html.find('#extended').prop('checked'),
-              });
-              if (explode) actor.useEdge();
-            },
-          },
-        },
-        default: 'roll',
-      }).render(true);
+      this.dialogUtility.handleSkillRoll(actor, skill.name)
     }
 
     async #rollWeapon(actor, weaponId) {
       const weapon = actor.items.get(weaponId);
       if (!weapon) return;
 
-      const skillName = actor.getSkillNameByLabel(weapon.system);
-      console.warn(skillName)
-      if (!skillName) {
+      const skill = actor.findByAttackSkill(weapon.system.attackSkill);
+      if (!skill) {
         ui.notifications?.warn(`No attack skill found for ${weapon.name}`);
         return;
       }
-      const skill = actor.getSkill(skillName);
-      if (!skill) return;
 
-      const rating         = skill.system.rating > 0 ? skill.system.rating : -1;
-      const attributeValue = actor.getAttribute(skill.system.attribute);
-      const numDice        = Math.max(attributeValue + rating, 1);
-      const content        = await renderTemplate(
-        'systems/shadowrun4e/templates/dicerolls/roll-dialog.hbs', {}
-      );
-
-      new Dialog({
-        title: `${game.i18n.localize('sr4.roll.rolling')} ${weapon.name}`,
-        content,
-        buttons: {
-          roll: {
-            label: game.i18n.localize('sr4.roll.rollButton'),
-            callback: async (html) => {
-              const DiceUtility = game.shadowrun4e?.DiceUtility;
-              if (!DiceUtility) return;
-              const bonus     = parseInt(html.find('#bonus').val()) || 0;
-              const malus     = parseInt(html.find('#malus').val()) || 0;
-              const explode   = html.find('#edge').prop('checked');
-              const smartlink = html.find('#smartlink').prop('checked') || weapon.system.smartlink;
-              const final     = numDice + bonus - malus + (smartlink ? 2 : 0);
-              const successes = await DiceUtility.rollAndShow({
-                numDice: final, explode,
-                edgeAvailable: actor.system.sheetStats.CURRENTEDGE > 0,
-                actor, skillName, extended: false,
-              });
-              if (explode) actor.useEdge();
-              if (game.user?.targets?.size > 0) {
-                for (const target of game.user.targets) {
-                  game.socket?.emit('system.shadowrun4e', {
-                    action: 'triggerDefense',
-                    payload: {
-                      defenderId: target.actor?.id,
-                      attackerId: actor.id,
-                      successes,
-                      weapon,
-                    },
-                  });
-                }
-              }
-            },
-          },
-        },
-        default: 'roll',
-      }).render(true);
+      this.dialogUtility.handleSkillRoll(actor, skill.name, weapon)
     }
 
     async #adjustMonitor(actor, track) {
@@ -185,28 +137,69 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     async buildSystemActions(groupIds) {
       const actor = this.actor;
       if (!actor) return;
-      await this.#buildSkills(actor);
+      await this.#buildActiveSkills(actor);
+      await this.#buildKnowledgeSkills(actor);
       await this.#buildWeapons(actor);
       await this.#buildMonitor(actor);
     }
 
-    async #buildSkills(actor) {
-      const actions = actor.items
-        .filter(i => i.type === 'Skill')
-        .sort((a, b) => {
-          const la = a.system.label ? game.i18n.localize(a.system.label) : a.name;
-          const lb = b.system.label ? game.i18n.localize(b.system.label) : b.name;
-          return la.localeCompare(lb);
-        })
-        .map(skill => ({
-          id:           skill.id,
-          name:         skill.system.label ? game.i18n.localize(skill.system.label) : skill.name,
-          img:          skill.img,
-          encodedValue: `skill|${skill.id}`,
-          tooltip:      `${skill.name} (${skill.system.attribute}) · Rating ${skill.system.rating}`,
-        }));
+    async #buildActiveSkills(actor) {
+      const skills = actor.items.filter(i => i.type === 'Skill' && i.system.type === 'active');
 
-      this.addActions(actions, { id: 'skills-list', nestId: 'skills_skills-list', type: 'system' });
+      for (const category of ACTIVE_SKILL_CATEGORIES) {
+        const actions = skills
+          .filter(s => (s.system.category ?? 'misc') === category)
+          .sort((a, b) => {
+            const la = a.system.label ? game.i18n.localize(a.system.label) : a.name;
+            const lb = b.system.label ? game.i18n.localize(b.system.label) : b.name;
+            return la.localeCompare(lb);
+          })
+          .map(skill => ({
+            id:           skill.id,
+            name:         skill.system.label ? game.i18n.localize(skill.system.label) : skill.name,
+            img:          skill.img,
+            encodedValue: `skill|${skill.id}`,
+            tooltip:      `${skill.name} (${skill.system.attribute}) · Rating ${skill.system.rating}`,
+          }));
+
+        if (!actions.length) continue;
+
+        this.addActions(actions, {
+          id:     `skills-${category}`,
+          nestId: `active-skills_skills-${category}`,
+          type:   'system',
+        });
+        console.warn(actions, 'active')
+      }
+    }
+    async #buildKnowledgeSkills(actor) {
+      const skills = actor.items.filter(i => i.type === 'Skill' && i.system.type === 'knowledge');
+
+      for (const category of KNOWLEDGE_SKILL_CATEGORIES) {
+        const actions = skills
+          .filter(s => knowledgeCategory(s.system.attribute) === category)
+          .sort((a, b) => {
+            const la = a.system.label ? game.i18n.localize(a.system.label) : a.name;
+            const lb = b.system.label ? game.i18n.localize(b.system.label) : b.name;
+            return la.localeCompare(lb);
+          })
+          .map(skill => ({
+            id:           skill.id,
+            name:         skill.system.label ? game.i18n.localize(skill.system.label) : skill.name,
+            img:          skill.img,
+            encodedValue: `skill|${skill.id}`,
+            tooltip:      `${skill.name} (${skill.system.attribute}) · Rating ${skill.system.rating}`,
+          }));
+
+        if (!actions.length) continue;
+
+        this.addActions(actions, {
+          id:     `knowledge-${category}`,
+          nestId: `knowledge-skills_knowledge-${category}`,
+          type:   'system',
+        });
+        console.warn(actions)
+      }
     }
 
     async #buildWeapons(actor) {
@@ -270,16 +263,30 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         groups: Object.values(GROUPS),
         layout: [
           {
-            nestId: 'skills',  id: 'skills',  name: 'SR4.HUD.Skills',  type: 'system',
-            groups: [{ nestId: 'skills_skills-list',   id: 'skills-list',   name: 'SR4.HUD.Skills',  type: 'system' }],
+            nestId: 'active-skills', id: 'active-skills', name: 'SR4.HUD.ActiveSkills', type: 'system',
+            groups: ACTIVE_SKILL_CATEGORIES.map(cat => ({
+              nestId: `active-skills_skills-${cat}`,
+              id:     `skills-${cat}`,
+              name:   `SR4.HUD.Skills.${cat.charAt(0).toUpperCase() + cat.slice(1)}`,
+              type:   'system',
+            })),
+          },
+          {
+            nestId: 'knowledge-skills', id: 'knowledge-skills', name: 'SR4.HUD.KnowledgeSkills', type: 'system',
+            groups: KNOWLEDGE_SKILL_CATEGORIES.map(cat => ({
+              nestId: `knowledge-skills_knowledge-${cat}`,
+              id:     `knowledge-${cat}`,
+              name:   `SR4.HUD.Skills.${cat.charAt(0).toUpperCase() + cat.slice(1)}`,
+              type:   'system',
+            })),
           },
           {
             nestId: 'weapons', id: 'weapons', name: 'SR4.HUD.Weapons', type: 'system',
-            groups: [{ nestId: 'weapons_weapons-list', id: 'weapons-list',  name: 'SR4.HUD.Weapons', type: 'system' }],
+            groups: [{ nestId: 'weapons_weapons-list', id: 'weapons-list', name: 'SR4.HUD.Weapons', type: 'system' }],
           },
           {
             nestId: 'monitor', id: 'monitor', name: 'SR4.HUD.Monitor', type: 'system',
-            groups: [{ nestId: 'monitor_monitor-list', id: 'monitor-list',  name: 'SR4.HUD.Monitor', type: 'system' }],
+            groups: [{ nestId: 'monitor_monitor-list', id: 'monitor-list', name: 'SR4.HUD.Monitor', type: 'system' }],
           },
         ],
       };

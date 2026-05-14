@@ -16,6 +16,7 @@
       { "id": "token-action-hud-core", "type": "module", "compatibility": { "minimum": "1.5.0" } }
     ]
   },
+  "styles": ["token-action-hud-sr4.css"],
   "esmodules": ["token-action-hud-sr4.js"],
   "languages": [
     { "lang": "en", "name": "English", "path": "lang/en.json" }
