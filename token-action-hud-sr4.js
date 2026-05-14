@@ -11,6 +11,7 @@ const GROUPS = {
   knowledgeSkills:   { id: 'knowledge-skills',    name: 'SR4.HUD.KnowledgeSkills', type: 'system' },
   weapons:           { id: 'weapons',             name: 'SR4.HUD.Weapons',         type: 'system' },
   monitor:           { id: 'monitor',             name: 'SR4.HUD.Monitor',         type: 'system' },
+  freeRoll:          { id: 'free-roll',           name: 'SR4.HUD.FreeRoll',        type: 'system' },
 
   // Active skill subgroups
   skillsCombat:      { id: 'skills-combat',       name: 'SR4.HUD.Skills.Combat',    type: 'system' },
@@ -27,9 +28,10 @@ const GROUPS = {
   knowledgeStreet:   { id: 'knowledge-street',    name: 'SR4.HUD.Skills.Street',    type: 'system' },
   knowledgeMisc:     { id: 'knowledge-misc',      name: 'SR4.HUD.Skills.Misc',      type: 'system' },
 
-  // Weapons + monitor subgroups
+  // Subgroups
   weaponsList:       { id: 'weapons-list',        name: 'SR4.HUD.Weapons',          type: 'system' },
   monitorList:       { id: 'monitor-list',        name: 'SR4.HUD.Monitor',          type: 'system' },
+  freeRollList:      { id: 'free-roll-list',      name: 'SR4.HUD.FreeRoll',         type: 'system' },
 };
 
 const ACTIVE_SKILL_CATEGORIES    = ['combat', 'physical', 'social', 'technical', 'matrix', 'magic', 'vehicle', 'misc'];
@@ -71,9 +73,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
       const actor = this.actor;
 
       switch (actionType) {
-        case 'skill':   await this.#rollSkill(actor, actionId);     break;
-        case 'weapon':  await this.#rollWeapon(actor, actionId);    break;
-        case 'monitor': await this.#adjustMonitor(actor, actionId); break;
+        case 'skill':    await this.#rollSkill(actor, actionId);     break;
+        case 'weapon':   await this.#rollWeapon(actor, actionId);    break;
+        case 'monitor':  await this.#adjustMonitor(actor, actionId); break;
+        case 'freeRoll': await this.#openFreeRollDialog();           break;
       }
     }
 
@@ -129,6 +132,21 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         default: 'set',
       }).render(true);
     }
+
+    /**
+     * Delegates to DieButtonHook.showDialog() from the sr4 system.
+     * DieButtonHook must be exported on game.shadowrun4e for this to work.
+     */
+    async #openFreeRollDialog() {
+      const DieButtonHook = game?.shadowrun4e?.DieButtonHook;
+
+      if (!DieButtonHook?.showDialog) {
+        ui.notifications?.warn('[SR4-HUD] DieButtonHook.showDialog not available on game.shadowrun4e');
+        return;
+      }
+
+      await DieButtonHook.showDialog();
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -147,6 +165,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
       await this.#buildKnowledgeSkills(actor);
       await this.#buildWeapons(actor);
       await this.#buildMonitor(actor);
+      await this.#buildFreeRoll();
     }
 
     async #buildActiveSkills(actor) {
@@ -242,6 +261,20 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
       this.addActions(actions, { id: 'monitor-list', nestId: 'monitor_monitor-list', type: 'system' });
     }
+
+    async #buildFreeRoll() {
+      const actions = [
+        {
+          id:           'free-roll',
+          name:         game.i18n.localize('SR4.HUD.FreeRoll'),
+          img:          'icons/svg/d20-grey.svg',
+          encodedValue: 'freeRoll|free-roll',
+          tooltip:      game.i18n.localize('SR4.HUD.FreeRollTooltip'),
+        },
+      ];
+
+      this.addActions(actions, { id: 'free-roll-list', nestId: 'free-roll_free-roll-list', type: 'system' });
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -292,6 +325,10 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
           {
             nestId: 'monitor', id: 'monitor', name: 'SR4.HUD.Monitor', type: 'system',
             groups: [{ nestId: 'monitor_monitor-list', id: 'monitor-list', name: 'SR4.HUD.Monitor', type: 'system' }],
+          },
+          {
+            nestId: 'free-roll', id: 'free-roll', name: 'SR4.HUD.FreeRoll', type: 'system',
+            groups: [{ nestId: 'free-roll_free-roll-list', id: 'free-roll-list', name: 'SR4.HUD.FreeRoll', type: 'system' }],
           },
         ],
       };
