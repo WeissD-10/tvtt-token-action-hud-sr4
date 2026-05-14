@@ -23,11 +23,11 @@
     { "lang": "de", "name": "Deutsch", "path": "lang/de.json" }
   ],
   "flags": {
-    "token-action-hud-core": {
-      "api": {
-        "module": "token-action-hud-sr4",
-        "class": "SR4ActionHandler"
+      "token-action-hud-core": {
+          "api": {
+              "module": "token-action-hud-sr4",
+              "class": "SR4SystemManager"
+          }
       }
-    }
   }
 }

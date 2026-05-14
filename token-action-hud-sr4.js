@@ -138,14 +138,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
      * DieButtonHook must be exported on game.shadowrun4e for this to work.
      */
     async #openFreeRollDialog() {
-      const DieButtonHook = game?.shadowrun4e?.DieButtonHook;
-
-      if (!DieButtonHook?.showDialog) {
-        ui.notifications?.warn('[SR4-HUD] DieButtonHook.showDialog not available on game.shadowrun4e');
-        return;
-      }
-
-      await DieButtonHook.showDialog();
+      await this.dialogUtility.handleFreeRoll();
     }
   }
 
