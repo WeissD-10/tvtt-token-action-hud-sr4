@@ -4,8 +4,15 @@
       "activeSkills": "Active Skills",
       "knowledgeSkills": "Knowledge Skills",
       "weapons": "Weapons",
-      "monitor": "Condition Monitor",
-      "freeRoll": "Free Roll",
+      "monitor": {
+        "tab": "Condition Monitor",
+        "physical": "Physical Monitor",
+        "stun": "Stun Monitor",
+        "setCurrent": "Set current damage",
+        "set": "Set",
+        "reset": "Reset"
+      },
+      "freeRoll": "Misc.",
       "freeRollTooltip": "Manually enter dice pool",
       "skills": {
         "combat": "Combat",
@@ -19,13 +26,6 @@
         "academic": "Academic",
         "street": "Street"
       }
-    },
-    "monitor": {
-      "physical": "Physical Monitor",
-      "stun": "Stun Monitor",
-      "setCurrent": "Set current damage",
-      "set": "Set",
-      "reset": "Reset"
     }
   }
 }

@@ -182,7 +182,7 @@ function createSystemManager(coreModule) {
           { id: 'active-skills',      name: loc('sr4.hud.activeSkills'),    type: 'system' },
           { id: 'knowledge-skills',   name: loc('sr4.hud.knowledgeSkills'), type: 'system' },
           { id: 'weapons',            name: loc('sr4.hud.weapons'),         type: 'system' },
-          { id: 'monitor',            name: loc('sr4.hud.monitor'),         type: 'system' },
+          { id: 'monitor',            name: loc('sr4.hud.monitor.tab'),         type: 'system' },
           { id: 'free-roll',          name: loc('sr4.hud.freeRoll'),        type: 'system' },
           ...ACTIVE_SKILL_CATEGORIES.map(cat =>
             ({ id: `skills-${cat}`,      name: loc(`sr4.hud.skills.${cat}`), type: 'system' })
@@ -191,7 +191,7 @@ function createSystemManager(coreModule) {
             ({ id: `knowledge-${cat}`,   name: loc(`sr4.hud.skills.${cat}`), type: 'system' })
           ),
           { id: 'weapons-list',       name: loc('sr4.hud.weapons'),         type: 'system' },
-          { id: 'monitor-list',       name: loc('sr4.hud.monitor'),         type: 'system' },
+          { id: 'monitor-list',       name: loc('sr4.hud.monitor.tab'),         type: 'system' },
           { id: 'free-roll-list',     name: loc('sr4.hud.freeRoll'),        type: 'system' },
         ],
         layout: [

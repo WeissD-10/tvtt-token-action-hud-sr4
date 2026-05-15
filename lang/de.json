@@ -1,29 +1,34 @@
 {
   "sr4": {
-    "monitor": {
-      "physical": "Körperlicher Zustandsmonitor",
-      "stun": "Geistiger Zustandsmonitor",
-      "setCurrent": "Aktuellen Schaden festlegen",
-      "set": "Setzen",
-      "reset": "Zurücksetzen"
-    },
-      "hud": {
-        "ActiveSkills": "Aktive Fertigkeiten",
-        "KnowledgeSkills": "Wissensfertigkeiten",
-        "Weapons": "Waffen",
-        "Monitor": "Zustandsmonitor",
-        "Skills": {
-          "Combat": "Kampf",
-          "Physical": "Körperlich",
-          "Social": "Sozial",
-          "Technical": "Technisch",
-          "Matrix": "Matrix",
-          "Magic": "Magie",
-          "Vehicle": "Fahrzeuge",
-          "Misc": "Sonstiges",
-          "Academic": "Akademisch",
-          "Street": "Straße"
+    "hud": {
+      "activeSkills": "Aktive Fertigkeiten",
+      "knowledgeSkills": "Wissensfertigkeiten",
+      "weapons": "Waffen",
+
+      "monitor": {
+        "tab": "Zustandsmonitor",
+        "physical": "Körperlicher Zustandsmonitor",
+        "stun": "Geistiger Zustandsmonitor",
+        "setCurrent": "Aktuellen Schaden festlegen",
+        "set": "Setzen",
+        "reset": "Zurücksetzen"
+      },
+
+      "freeRoll": "Sonstiges",
+      "freeRollTooltip": "Manuelles Würfeln",
+
+      "skills": {
+        "combat": "Kampf",
+        "physical": "Körperlich",
+        "social": "Sozial",
+        "technical": "Technisch",
+        "matrix": "Matrix",
+        "magic": "Magie",
+        "vehicle": "Fahrzeuge",
+        "misc": "Sonstiges",
+        "academic": "Akademisch",
+        "street": "Straße"
       }
-  }
+    }
   }
 }
