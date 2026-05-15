@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  },
+    "scripts": {
+    "watch:foundry": "node watch.js"
+  }
+}

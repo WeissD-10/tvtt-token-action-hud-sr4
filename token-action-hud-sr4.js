@@ -95,7 +95,9 @@ function createActionHandler(coreModule) {
       this.#buildSkills(actor, 'knowledge', KNOWLEDGE_SKILL_CATEGORIES, 'knowledge-skills', (s) => knowledgeCategory(s.system.attribute));
       this.#buildWeapons(actor);
       this.#buildMonitor(actor);
+      this.#buildActions(actor);
       this.#buildFreeRoll();
+
     }
 
     #buildSkills(actor, type, categories, parentId, categorize) {
@@ -151,6 +153,26 @@ function createActionHandler(coreModule) {
         encodedValue: `monitor|${track}`,
       }));
       this.addActions(actions, { id: 'monitor-list', nestId: 'monitor_monitor-list', type: 'system' });
+    }
+
+    #buildActions(actor) {
+      const actions = actor.items
+        .filter(i => i.type === 'Action')
+        .map(a => ({
+          id: a.id,
+          name: a.name,
+          img: a.img,
+          encodedValue: `action|${a.id}`,
+          tooltip: `${a.name} · ${a.system.actionType ?? ''}`,
+        }));
+
+      if (!actions.length) return;
+
+      this.addActions(actions, {
+        id: 'actions-list',
+        nestId: 'actions_actions-list',
+        type: 'system',
+      });
     }
 
     #buildFreeRoll() {
