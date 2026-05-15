@@ -15,6 +15,7 @@ function isAllowed(relPath) {
   return (
     normalized === 'module.json' ||
     normalized === 'token-action-hud-sr4.js' ||
+    normalized === 'token-action-hud-sr4.css' ||
     normalized.startsWith('lang')
   );
 }
