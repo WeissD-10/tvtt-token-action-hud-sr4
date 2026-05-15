@@ -27,10 +27,12 @@ function createRollHandler(coreModule) {
     async handleActionClick(event, encodedValue) {
       const [type, id] = encodedValue.split('|');
       const actor = this.actor;
+
       switch (type) {
         case 'skill':    return this.#rollSkill(actor, id);
         case 'weapon':   return this.#rollWeapon(actor, id);
         case 'monitor':  return this.#adjustMonitor(actor, id);
+        case 'action':   return this.#rollAction(actor, id);
         case 'freeRoll': return this.#dialog.handleFreeRoll();
       }
     }
@@ -77,6 +79,13 @@ function createRollHandler(coreModule) {
         },
         default: 'set',
       }).render(true);
+    }
+
+    async #rollAction(actor, id) {
+      const action = actor.items.get(id);
+      if(action) {}
+      const numDice = action.system.rating1 ?? 0 + action.system.rating2 ?? 0
+      this.#dialog.openActionDialog(actor, action.name, numDice)
     }
   };
 }
@@ -156,6 +165,7 @@ function createActionHandler(coreModule) {
     }
 
     #buildActions(actor) {
+      console.warn('OI!!')
       const actions = actor.items
         .filter(i => i.type === 'Action')
         .map(a => ({
@@ -165,6 +175,7 @@ function createActionHandler(coreModule) {
           encodedValue: `action|${a.id}`,
           tooltip: `${a.name} · ${a.system.actionType ?? ''}`,
         }));
+      console.warn(actions, 'ACTIONS')
 
       if (!actions.length) return;
 
@@ -204,8 +215,11 @@ function createSystemManager(coreModule) {
           { id: 'active-skills',      name: loc('sr4.hud.activeSkills'),    type: 'system' },
           { id: 'knowledge-skills',   name: loc('sr4.hud.knowledgeSkills'), type: 'system' },
           { id: 'weapons',            name: loc('sr4.hud.weapons'),         type: 'system' },
-          { id: 'monitor',            name: loc('sr4.hud.monitor.tab'),         type: 'system' },
+          { id: 'monitor',            name: loc('sr4.hud.monitor.tab'),     type: 'system' },
           { id: 'free-roll',          name: loc('sr4.hud.freeRoll'),        type: 'system' },
+          { id: 'actions', name: loc('sr4.hud.actions'), type: 'system' },
+          { id: 'actions-list', name: loc('sr4.hud.actions'), type: 'system' },
+
           ...ACTIVE_SKILL_CATEGORIES.map(cat =>
             ({ id: `skills-${cat}`,      name: loc(`sr4.hud.skills.${cat}`), type: 'system' })
           ),
@@ -251,6 +265,20 @@ function createSystemManager(coreModule) {
             nestId: 'free-roll', id: 'free-roll',
             name: loc('sr4.hud.freeRoll'), type: 'system',
             groups: [{ nestId: 'free-roll_free-roll-list', id: 'free-roll-list', name: loc('sr4.hud.freeRoll'), type: 'system' }],
+          },
+          {
+            nestId: 'actions',
+            id: 'actions',
+            name: loc('sr4.hud.actions'),
+            type: 'system',
+            groups: [
+              {
+                nestId: 'actions_actions-list',
+                id: 'actions-list',
+                name: loc('sr4.hud.actions'),
+                type: 'system',
+              },
+            ],
           },
         ],
       };
