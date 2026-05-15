@@ -1,25 +1,25 @@
 {
-  "SR4": {
-    "HUD": {
-      "ActiveSkills": "Active Skills",
-      "KnowledgeSkills": "Knowledge Skills",
-      "Weapons": "Weapons",
-      "Monitor": "Condition Monitor",
-      "Skills": {
-        "Combat": "Combat",
-        "Physical": "Physical",
-        "Social": "Social",
-        "Technical": "Technical",
-        "Matrix": "Matrix",
-        "Magic": "Magic",
-        "Vehicle": "Vehicle",
-        "Misc": "Miscellaneous",
-        "Academic": "Academic",
-        "Street": "Street"
-      }
-    }
-  },
   "sr4": {
+    "hud": {
+      "activeSkills": "Active Skills",
+      "knowledgeSkills": "Knowledge Skills",
+      "weapons": "Weapons",
+      "monitor": "Condition Monitor",
+      "freeRoll": "Free Roll",
+      "freeRollTooltip": "Manually enter dice pool",
+      "skills": {
+        "combat": "Combat",
+        "physical": "Physical",
+        "social": "Social",
+        "technical": "Technical",
+        "matrix": "Matrix",
+        "magic": "Magic",
+        "vehicle": "Vehicle",
+        "misc": "Miscellaneous",
+        "academic": "Academic",
+        "street": "Street"
+      }
+    },
     "monitor": {
       "physical": "Physical Monitor",
       "stun": "Stun Monitor",

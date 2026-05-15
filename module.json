@@ -20,7 +20,7 @@
         "id": "shadowrun4e",
         "type": "system",
         "compatibility": {
-          "minimum": "1.0.0"
+          "minimum": "0.1.0"
         }
       }
     ],
@@ -29,7 +29,7 @@
         "id": "token-action-hud-core",
         "type": "module",
         "compatibility": {
-          "minimum": "1.5.0"
+          "minimum": "2.0.0"
         }
       }
     ]

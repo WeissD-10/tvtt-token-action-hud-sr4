@@ -1,31 +1,29 @@
 {
-  "SR4": {
-    "HUD": {
-      "ActiveSkills": "Aktive Fertigkeiten",
-      "KnowledgeSkills": "Wissensfertigkeiten",
-      "Weapons": "Waffen",
-      "Monitor": "Zustandsmonitor",
-      "Skills": {
-        "Combat": "Kampf",
-        "Physical": "Körperlich",
-        "Social": "Sozial",
-        "Technical": "Technisch",
-        "Matrix": "Matrix",
-        "Magic": "Magie",
-        "Vehicle": "Fahrzeuge",
-        "Misc": "Sonstiges",
-        "Academic": "Akademisch",
-        "Street": "Straße"
-      }
-    }
-  },
   "sr4": {
     "monitor": {
-      "physical": "Körperlicher Monitor",
-      "stun": "Betäubungsmonitor",
+      "physical": "Körperlicher Zustandsmonitor",
+      "stun": "Geistiger Zustandsmonitor",
       "setCurrent": "Aktuellen Schaden festlegen",
       "set": "Setzen",
       "reset": "Zurücksetzen"
-    }
+    },
+      "hud": {
+        "ActiveSkills": "Aktive Fertigkeiten",
+        "KnowledgeSkills": "Wissensfertigkeiten",
+        "Weapons": "Waffen",
+        "Monitor": "Zustandsmonitor",
+        "Skills": {
+          "Combat": "Kampf",
+          "Physical": "Körperlich",
+          "Social": "Sozial",
+          "Technical": "Technisch",
+          "Matrix": "Matrix",
+          "Magic": "Magie",
+          "Vehicle": "Fahrzeuge",
+          "Misc": "Sonstiges",
+          "Academic": "Akademisch",
+          "Street": "Straße"
+      }
+  }
   }
 }
