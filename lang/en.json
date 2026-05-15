@@ -4,6 +4,9 @@
       "activeSkills": "Active Skills",
       "knowledgeSkills": "Knowledge Skills",
       "weapons": "Weapons",
+      "actions": {
+        "tab": "Actions"
+      },
       "monitor": {
         "tab": "Condition Monitor",
         "physical": "Physical Monitor",

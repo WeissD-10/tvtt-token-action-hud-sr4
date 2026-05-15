@@ -4,7 +4,9 @@
       "activeSkills": "Aktive Fertigkeiten",
       "knowledgeSkills": "Wissensfertigkeiten",
       "weapons": "Waffen",
-
+      "actions": {
+        "tab": "Aktionen"
+      },
       "monitor": {
         "tab": "Zustandsmonitor",
         "physical": "Körperlicher Zustandsmonitor",
