@@ -3,8 +3,8 @@
   "title": "Token Action HUD - Shadowrun 4e",
   "description": "Token Action HUD integration for the Shadowrun 4th Edition system.",
   "version": "0.1.1",
-  "manifest": "https://raw.githubusercontent.com/WeissD-10/tvtt-token-action-hud-sr4/main/module.json",
-  "download": "https://github.com/WeissD-10/tvtt-token-action-hud-sr4/releases/download/v0.1.1/token-action-hud-sr4.zip",
+  "manifest": "https://raw.githubusercontent.com/tarislowatsch/tvtt-token-action-hud-sr4/main/module.json",
+  "download": "https://github.com/Tarislowatsch/tvtt-token-action-hud-sr4/releases/download/v0.1.1/token-action-hud-sr4.zip",
   "authors": [
     {
       "name": "dweiss"
