@@ -22,7 +22,7 @@ function knowledgeCategory(attribute) {
 
 function createRollHandler(coreModule) {
   return class SR4RollHandler extends coreModule.api.RollHandler {
-    #dialog = game.shadowrun4e.dialogUtility;
+    #dialog = game.sr4.dialogUtility;
 
     async handleActionClick(event, encodedValue) {
       const [type, id] = encodedValue.split('|');
@@ -56,29 +56,36 @@ function createRollHandler(coreModule) {
     async #adjustMonitor(actor, track) {
       const monitor = actor.system.conditionMonitor[track];
       if (!monitor) return;
-      new Dialog({
-        title:   `${loc(`sr4.monitor.${track}`)} — ${monitor.current}/${monitor.max}`,
+      console.warn(loc('sr4.hud.monitor.setCurrent'));
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: `${loc(`sr4.hud.monitor.${track}`)} — ${monitor.current}/${monitor.max}` },
         content: `
           <div style="display:flex;flex-direction:column;gap:8px;padding:8px;">
-            <label>${loc('sr4.monitor.setCurrent')}</label>
+            <label>${loc('sr4.hud.monitor.setCurrent')}</label>
             <input id="monitor-value" type="number" min="0" max="${monitor.max}" value="${monitor.current}" style="width:100%;">
           </div>
         `,
-        buttons: {
-          set: {
-            label: loc('sr4.monitor.set'),
-            callback: async (html) => {
-              const val = Math.clamp(parseInt(html.find('#monitor-value').val()) || 0, 0, monitor.max);
+        buttons: [
+          {
+            label: loc('sr4.hud.monitor.set'),
+            action: 'set',
+            callback: async (_event, _button, dialog) => {
+              const val = Math.clamp(
+                parseInt(dialog.querySelector('#monitor-value').value) || 0,
+                0,
+                monitor.max
+              );
               await actor.update({ [`system.conditionMonitor.${track}.current`]: val });
             },
           },
-          reset: {
-            label:    loc('sr4.monitor.reset'),
-            callback: async () => actor.update({ [`system.conditionMonitor.${track}.current`]: 0 }),
+          {
+            label: loc('sr4.hud.monitor.reset'),
+            action: 'reset',
+            callback: async () =>
+              actor.update({ [`system.conditionMonitor.${track}.current`]: 0 }),
           },
-        },
-        default: 'set',
-      }).render(true);
+        ],
+      });
     }
 
     async #rollAction(actor, id) {
@@ -157,7 +164,7 @@ function createActionHandler(coreModule) {
       if (!cm) return;
       const actions = ['physical', 'stun'].map(track => ({
         id:           track,
-        name:         `${loc(`sr4.monitor.${track}`)}: ${cm[track].current}/${cm[track].max}`,
+        name:         `${loc(`sr4.hud.monitor.${track}`)}: ${cm[track].current}/${cm[track].max}`,
         img:          track === 'physical' ? 'icons/svg/regen.svg' : 'icons/svg/daze.svg',
         encodedValue: `monitor|${track}`,
       }));
@@ -210,6 +217,7 @@ function createSystemManager(coreModule) {
     registerSettings()          {}
 
     async registerDefaults() {
+      console.warn(loc('sr4.hud.actions.tab'))
       return {
         groups: [
           { id: 'active-skills',      name: loc('sr4.hud.activeSkills'),    type: 'system' },
@@ -217,8 +225,8 @@ function createSystemManager(coreModule) {
           { id: 'weapons',            name: loc('sr4.hud.weapons'),         type: 'system' },
           { id: 'monitor',            name: loc('sr4.hud.monitor.tab'),     type: 'system' },
           { id: 'free-roll',          name: loc('sr4.hud.freeRoll'),        type: 'system' },
-          { id: 'actions', name: loc('sr4.hud.actions'), type: 'system' },
-          { id: 'actions-list', name: loc('sr4.hud.actions'), type: 'system' },
+          { id: 'actions', name: loc('sr4.hud.actions.tab'), type: 'system' },
+          { id: 'actions-list', name: loc('sr4.hud.actions.tab'), type: 'system' },
 
           ...ACTIVE_SKILL_CATEGORIES.map(cat =>
             ({ id: `skills-${cat}`,      name: loc(`sr4.hud.skills.${cat}`), type: 'system' })
@@ -258,8 +266,8 @@ function createSystemManager(coreModule) {
           },
           {
             nestId: 'monitor', id: 'monitor',
-            name: loc('sr4.hud.monitor'), type: 'system',
-            groups: [{ nestId: 'monitor_monitor-list', id: 'monitor-list', name: loc('sr4.hud.monitor'), type: 'system' }],
+            name: loc('sr4.hud.monitor.tab'), type: 'system',
+            groups: [{ nestId: 'monitor_monitor-list', id: 'monitor-list', name: loc('sr4.hud.monitor.tab'), type: 'system' }],
           },
           {
             nestId: 'free-roll', id: 'free-roll',
